@@ -7,7 +7,7 @@ import createStore from 'store/create-store'
 
 declare let module: { hot: any }
 const rootElement = document.getElementById('app')
-const store = createStore()
+export const store = createStore()
 
 ReactDOM.render(
   <AppContainer>
