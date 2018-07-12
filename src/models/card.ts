@@ -16,6 +16,7 @@ export enum Zone {
   Hand,
   BattleZone,
   ManaZone,
+  ShieldZone,
   Graveyard
 }
 
