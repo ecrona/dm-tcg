@@ -2,7 +2,11 @@ import { Creature, Civilization } from 'models/card'
 import { Race } from 'models/race'
 import { EffectEvent } from 'models/effects'
 
+console.log(Creature)
+
 export class AquaSniper extends Creature {
+  public id = 'dm-01-s3'
+  public name = 'Aqua Sniper'
   public civilization = Civilization.Water
   public manaCost = 8
   public race = Race.LiquidPeople

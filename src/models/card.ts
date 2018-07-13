@@ -8,7 +8,6 @@ import {
   EffectEvent,
   EffectStat
 } from './effects'
-import { CardService } from './services'
 import { cardCollection } from 'collections/card'
 
 export enum Zone {
@@ -26,7 +25,7 @@ export enum CardType {
   Shield
 }
 
-export type AnyCard = Spell | Creature
+export type AnyCard = Spell | Creature | EmptyCard
 
 export enum Civilization {
   Light,
@@ -38,7 +37,8 @@ export enum Civilization {
 
 export interface CardState {
   id: string
-  cardTypeId: number
+  mine: boolean
+  cardTypeId: string
   zone: Zone
   order: number
 
@@ -52,15 +52,9 @@ export abstract class Card {
   public name: string
   public readonly type: CardType
   public civilization: Civilization
-  public manaCost: number
-  public manaNumber: number
-  public shieldTrigger: boolean
-
-  protected cardService: CardService
-
-  public inject(cardService: CardService) {
-    this.cardService = cardService
-  }
+  public manaCost = 1
+  public manaNumber = 1
+  public shieldTrigger = false
 }
 
 abstract class Shield extends Card {
@@ -72,7 +66,7 @@ abstract class Spell extends Card {
   protected eventEffects: Array<SpellEffect> = []
 }
 
-export abstract class Creature extends Card {
+export class Creature extends Card {
   public readonly type = CardType.Creature
   protected power = 1000
   protected extraPower = 0
@@ -106,6 +100,9 @@ export abstract class Creature extends Card {
   }
 }
 
+export class EmptyCard extends Card {}
+
+/*
 class TestEffect implements Effect {
   id: 'slayer'
   public dispatch(cards: Array<CardState>) {
@@ -164,3 +161,4 @@ const battle = (attacker: CardState, defender: CardState) => {
     dispatch(battleAction(defender, attacker))
   }
 }
+*/
