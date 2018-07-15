@@ -2,7 +2,7 @@ import * as path from 'path'
 import * as webpack from 'webpack'
 
 export const config: webpack.Configuration = {
-  entry: ['./src/index.tsx'],
+  entry: ['./src/client/index.tsx'],
 
   module: {
     rules: [

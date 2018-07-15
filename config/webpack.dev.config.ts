@@ -10,14 +10,17 @@ export const config: webpack.Configuration = {
     'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:8080',
     'webpack/hot/only-dev-server',
-    './src/index.tsx'
+    './src/client/index.tsx'
   ],
 
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loaders: ['awesome-typescript-loader']
+        loader: 'awesome-typescript-loader',
+        options: {
+          configFileName: './src/client/tsconfig.json'
+        }
       }
     ]
   },

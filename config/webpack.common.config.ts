@@ -1,6 +1,7 @@
-import * as HtmlWebpackPlugin from 'html-webpack-plugin'
-import * as path from 'path'
 import * as webpack from 'webpack'
+import * as path from 'path'
+import * as HtmlWebpackPlugin from 'html-webpack-plugin'
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 
 export const config: webpack.Configuration = {
   output: {
@@ -9,8 +10,11 @@ export const config: webpack.Configuration = {
   },
 
   resolve: {
-    modules: [path.resolve('./src'), 'node_modules'],
-    extensions: ['.ts', '.tsx', '.js']
+    modules: [path.resolve('./src/client'), 'node_modules'],
+    extensions: ['.ts', '.tsx', '.js'],
+    plugins: [
+      new TsconfigPathsPlugin({ configFile: './src/client/tsconfig.json' })
+    ]
   },
 
   module: {
