@@ -20,6 +20,7 @@ export enum Zone {
 }
 
 export enum CardType {
+  Empty,
   Creature,
   Spell,
   Shield
@@ -35,16 +36,25 @@ export enum Civilization {
   Nature
 }
 
-export interface CardState {
-  id: string
+export interface IdentifableCard {
   mine: boolean
-  cardTypeId: string
   zone: Zone
   order: number
+}
 
+export interface CardState extends IdentifableCard {
+  localId: number
+  cardTypeId: string
   tapped: boolean
   eventEffects: Array<TemporaryEventEffect>
   statEffects: Array<TemporaryStatEffect>
+}
+
+export interface CardViewState {
+  localId: number
+  name: string
+  selectable: boolean
+  tapped: boolean
 }
 
 export abstract class Card {
@@ -100,65 +110,6 @@ export class Creature extends Card {
   }
 }
 
-export class EmptyCard extends Card {}
-
-/*
-class TestEffect implements Effect {
-  id: 'slayer'
-  public dispatch(cards: Array<CardState>) {
-    return cards
-  }
+export class EmptyCard extends Card {
+  public readonly type = CardType.Empty
 }
-
-class Test extends Creature {
-  public shieldBreakAmount = 2
-  public eventEffects: Array<SpellEffect> = [
-    {
-      effect: new TestEffect(),
-      event: EffectEvent.Summoned,
-      conditions: []
-    }
-  ]
-}
-
-const collection = cardCollection
-
-const getAttackPower = (attacker: CardState) => {
-  const card = collection.findCreature(attacker)
-  return (
-    card.getAttackPower() +
-    attacker.statEffects
-      .filter(
-        effect =>
-          effect.stat === EffectStat.Power ||
-          effect.stat === EffectStat.ExtraPower
-      )
-      .reduce((previous, effect) => previous + effect.value, 0)
-  )
-}
-
-const battleAction = (victor: CardState, loser: CardState) => {}
-
-const reducer = (cards: Array<CardState>) => {
-  // case battleAction
-  let cardsState = cards
-  cardsState = collection.moveCardToZone(
-    cardsState,
-    action.loser,
-    Zone.Graveyard
-  )
-  cardsState = collection.postBattleEffects(cardsState, action.victor)
-  return { ...{}, cards: cardsState }
-}
-
-const battle = (attacker: CardState, defender: CardState) => {
-  const attackerCard = collection.findCreature(attacker)
-  const defenderCard = collection.findCreature(defender)
-
-  if (attackerCard.getAttackPower() > defenderCard.getDefensePower()) {
-    dispatch(battleAction(attacker, defender))
-  } else {
-    dispatch(battleAction(defender, attacker))
-  }
-}
-*/

@@ -5,3 +5,8 @@ export enum Phase {
   Summon,
   Battle
 }
+
+export enum PhaseAction {
+  None,
+  Attack
+}

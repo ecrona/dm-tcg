@@ -1,6 +1,7 @@
 import { CardState } from './card'
 
 export interface Effect {
+  requiresAction: boolean
   dispatch(cards: Array<CardState>): Array<CardState>
 }
 

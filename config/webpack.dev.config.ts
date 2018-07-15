@@ -4,6 +4,8 @@ import * as webpack from 'webpack'
 export const config: webpack.Configuration = {
   mode: 'development',
 
+  devtool: 'inline-source-map',
+
   entry: [
     'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:8080',

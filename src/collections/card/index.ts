@@ -7,7 +7,7 @@ class CardCollection {
 
   public findCreature(card: CardState): Creature {
     return this.cards.find(
-      _card => _card.type === CardType.Creature && _card.id === card.id
+      _card => _card.type === CardType.Creature && _card.id === card.cardTypeId
     ) as Creature
   }
 

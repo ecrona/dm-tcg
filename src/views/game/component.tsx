@@ -1,77 +1,102 @@
 import * as React from 'react'
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import green from '@material-ui/core/colors/green'
 import { StoreProps } from './container'
+import { CardList } from './components/card-list'
+import { Phase, PhaseAction } from 'models/phase'
 
 interface Props extends StoreProps {}
 
 export default class Component extends React.PureComponent<Props> {
+  public getPhaseDescription() {
+    switch (this.props.phase) {
+      case Phase.Mana:
+        return 'Mana Phase'
+      case Phase.Summon:
+        return 'Summon Phase'
+      case Phase.Battle:
+        return 'Battle Phase'
+      default:
+        return 'Start Phase'
+    }
+  }
+
+  public getPhaseActionDescription() {
+    switch (this.props.phaseAction) {
+      case PhaseAction.Attack:
+        return 'Choose target to attack'
+      default:
+        return ''
+    }
+  }
+
   render() {
+    const { myCards, theirCards, selectedCard } = this.props
+
     return (
       <div>
         <br />
         <div>
           Them
+          <div className="deck">Deck cards: {theirCards.deck.length}</div>
           <div className="deck">
-            Deck cards: {this.props.theirCards.deck.length}
-          </div>
-          <div className="deck">
-            Graveyard cards: {this.props.theirCards.graveyard.length}
+            Graveyard cards: {theirCards.graveyard.length}
           </div>
           <div className="hand">
-            Hand:{' '}
-            {this.props.theirCards.hand.map(card => <span>{card.name}, </span>)}
+            Hand: <CardList cards={theirCards.hand} />
           </div>
           <div className="mana-zone">
-            Mana Zone:{' '}
-            {this.props.theirCards.manaZone.map(card => (
-              <span>{card.name}, </span>
-            ))}
+            Mana Zone: <CardList cards={theirCards.manaZone} />
           </div>
           <div className="shield-zone">
-            Shield Zone:{' '}
-            {this.props.theirCards.shieldZone.map(card => (
-              <span>{card.name}, </span>
-            ))}
+            Shield Zone: <CardList cards={theirCards.shieldZone} />
           </div>
           <div className="battle-zone">
-            Battle Zone:{' '}
-            {this.props.theirCards.battleZone.map(card => (
-              <span>{card.name}, </span>
-            ))}
+            Battle Zone: <CardList cards={theirCards.battleZone} />
           </div>
         </div>
         <br />
         <div>
           Me
           <div className="battle-zone">
-            Battle Zone:{' '}
-            {this.props.myCards.battleZone.map(card => (
-              <span>{card.name}, </span>
-            ))}
+            Battle Zone: <CardList cards={myCards.battleZone} />
           </div>
           <div className="shield-zone">
-            Shields:{' '}
-            {this.props.myCards.shieldZone.map(card => (
-              <span>{card.name}, </span>
-            ))}
+            Shields: <CardList cards={myCards.shieldZone} />
           </div>
           <div className="mana-zone">
-            Mana Zone:{' '}
-            {this.props.myCards.manaZone.map(card => (
-              <span>{card.name}, </span>
-            ))}
+            Mana Zone: <CardList cards={myCards.manaZone} />
           </div>
           <div className="hand">
-            Hand:{' '}
-            {this.props.myCards.hand.map(card => <span>{card.name}, </span>)}
+            Hand: <CardList cards={myCards.hand} />
           </div>
           <div className="deck">
-            Graveyard cards: {this.props.myCards.graveyard.length}
+            Graveyard cards: {myCards.graveyard.length}
           </div>
-          <div className="deck">
-            Deck cards: {this.props.myCards.deck.length}
+          <div className="deck">Deck cards: {myCards.deck.length}</div>
+        </div>
+        <br />
+        {this.props.selectedCard && (
+          <div>
+            <div>Selected Card:{selectedCard.name}</div>
+            <button
+              onClick={() => this.props.runCardAction()}
+              disabled={!selectedCard.actionAvailable}
+            >
+              {selectedCard.actionName}
+            </button>
+          </div>
+        )}
+        <br />
+        <div>
+          {this.getPhaseDescription()}
+          {!!this.props.phaseAction && this.getPhaseActionDescription()}
+          <div>
+            <button onClick={this.props.nextPhase}>Next phase</button>
+            <button
+              onClick={this.props.cancel}
+              disabled={!this.props.canCancel}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>
