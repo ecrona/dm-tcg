@@ -1,4 +1,4 @@
-declare module 'redux-thunk' {
+/*declare module 'redux-thunk' {
   import { Middleware, Action, AnyAction } from 'redux'
 
   export interface ThunkDispatch<S, E, A extends Action> {
@@ -22,3 +22,4 @@ declare module 'redux-thunk' {
     extraArgument: E
   ): ThunkMiddleware<{}, AnyAction, E>
 }
+*/

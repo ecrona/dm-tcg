@@ -3,6 +3,7 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import green from '@material-ui/core/colors/green'
 import { StoreProps } from './container'
+import { Game } from 'views/game'
 
 interface Props extends StoreProps {}
 
@@ -21,6 +22,7 @@ export default class Component extends React.PureComponent<Props> {
         <CssBaseline />
         <div style={{}}>
           <span>DM TCG</span>
+          <Game />
         </div>
       </MuiThemeProvider>
     )

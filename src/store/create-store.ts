@@ -2,7 +2,7 @@ import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import plainify from 'redux-plainify'
 import { createLogger } from 'redux-logger'
-import { rootReducer } from 'store'
+import { rootReducer } from './reducers'
 
 declare let module: { hot: any }
 
