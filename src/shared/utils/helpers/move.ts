@@ -26,14 +26,14 @@ export const moveCardToZone = (
   card: IdentifableCard,
   to: Zone
 ) => {
-  const topOrder = getZoneTopOrder(cards, card.mine, to)
+  const topOrder = getZoneTopOrder(cards, card.playerId, to)
 
   return cards.map(_card => {
     if (isCardState(_card, card)) {
       // Replace the zone of the selected card
       return { ..._card, zone: to, order: topOrder + 1 }
     } else if (
-      _card.mine === card.mine &&
+      _card.playerId === card.playerId &&
       _card.zone === card.zone &&
       _card.order > card.order
     ) {

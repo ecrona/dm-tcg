@@ -18,6 +18,7 @@ import {
   getTheirShieldZone,
   getTheirGraveyard,
   getSelectedCard,
+  canChangePhase,
   canCancel
 } from './store/selectors'
 import Component from './component'
@@ -42,6 +43,7 @@ const mapStateToProps = (state: State) => ({
   phase: state.game.phase,
   phaseAction: state.game.phaseAction,
   selectedCard: getSelectedCard(state),
+  canChangePhase: canChangePhase(state),
   canCancel: canCancel(state)
 })
 

@@ -2,18 +2,23 @@ import { Component } from '@nestjs/common'
 
 import { CardState, Zone, CardType } from '@shared/models/card'
 import { cardCollection } from '@shared/collections/card'
+import { WsException } from '@nestjs/websockets'
 
-export type State = Array<CardState>
+interface CardContainer {
+  gameId: number
+  cards: Array<CardState>
+}
+
 const adjustOrder = (card, index) => ({ ...card, order: index })
 
 let localId = 0
 
-const myDeck = Array.apply(null, { length: 40 }).map(_ => {
+const myDeck: Array<CardState> = Array.apply(null, { length: 40 }).map(_ => {
   const card = cardCollection.random()
 
   return {
     localId: ++localId,
-    mine: true,
+    playerId: 1,
     cardTypeId: card.id,
     zone: Zone.Deck,
     order: 0,
@@ -32,7 +37,7 @@ const theirDeck = Array.apply(null, { length: 40 }).map(_ => {
   const card = cardCollection.random()
   return {
     localId: ++localId,
-    mine: false,
+    playerId: 2,
     cardTypeId: card.id,
     zone: Zone.Deck,
     order: 0,
@@ -64,5 +69,35 @@ const cards = [
 
 @Component()
 export class CardService {
-  public readonly cards: Array<CardState> = cards
+  public readonly cardContainers: Array<CardContainer> = [{ gameId: 1, cards }]
+
+  private getCardContainer(gameId: number) {
+    const cardContainer = this.cardContainers.find(
+      cardContainer => cardContainer.gameId === gameId
+    )
+
+    if (!cardContainer) throw new WsException('Card container not found')
+
+    return cardContainer
+  }
+
+  public getCards(gameId: number) {
+    return this.getCardContainer(gameId).cards
+  }
+
+  public getMaskedCards(gameId: number, playerId: number) {
+    const maskedZones = [Zone.Hand, Zone.ShieldZone]
+    return this.getCards(gameId).map(
+      card =>
+        card.zone === Zone.Deck ||
+        (card.playerId !== playerId && maskedZones.includes(card.zone))
+          ? { ...card, cardTypeId: 'empty' }
+          : card
+    )
+  }
+
+  public setCards(gameId: number, cards: Array<CardState>) {
+    const cardContainer = this.getCardContainer(gameId)
+    cardContainer.cards = cards
+  }
 }

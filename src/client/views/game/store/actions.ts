@@ -8,6 +8,7 @@ import {
   getZoneTopOrder,
   findCardStateByLocalId
 } from '@shared/utils/helpers/find'
+import { actions } from '@shared/actions/websocket'
 
 export const runCardAction = (): ThunkAction => {
   return (dispatch, getState, endpoints) => {
@@ -24,16 +25,16 @@ export const runCardAction = (): ThunkAction => {
 
     switch (state.game.phase) {
       case Phase.Mana:
-        return dispatch(putToManaZone())
+        return dispatch(chargeMana())
       case Phase.Summon:
-        return dispatch(putToBattleZone())
+        return dispatch(summon())
       case Phase.Battle:
         return dispatch(gameActions.attack(state.game.selectedCardLocalId))
     }
   }
 }
 
-export const putToManaZone = (): ThunkAction => {
+export const chargeMana = (): ThunkAction => {
   return (dispatch, getState, endpoints) => {
     const state = getState()
     const selectedCard = findCardStateByLocalId(
@@ -41,11 +42,11 @@ export const putToManaZone = (): ThunkAction => {
       state.game.selectedCardLocalId
     )
 
-    dispatch(cardsActions.putToManaZone(selectedCard))
+    dispatch(actions.send('game/charge-mana', selectedCard))
   }
 }
 
-export const putToBattleZone = (): ThunkAction => {
+export const summon = (): ThunkAction => {
   return (dispatch, getState, endpoints) => {
     const state = getState()
     const selectedCard = findCardStateByLocalId(
@@ -53,32 +54,13 @@ export const putToBattleZone = (): ThunkAction => {
       state.game.selectedCardLocalId
     )
 
-    dispatch(cardsActions.putToBattleZone(selectedCard))
+    dispatch(cardsActions.summon(selectedCard))
   }
 }
 
 export const nextPhase = (): ThunkAction => {
   return (dispatch, getState, endpoints) => {
-    const state = getState()
-    let nextPhase = Phase.Start
-    let myTurnNext = true
-
-    switch (state.game.phase) {
-      case Phase.Start:
-        nextPhase = Phase.Mana
-        break
-      case Phase.Mana:
-        nextPhase = Phase.Summon
-        break
-      case Phase.Summon:
-        nextPhase = Phase.Battle
-        break
-      case Phase.Battle:
-        nextPhase = Phase.Start
-        myTurnNext = false
-    }
-
-    dispatch(gameActions.changePhase(nextPhase, myTurnNext))
+    dispatch(actions.send('game/next-phase'))
   }
 }
 

@@ -94,7 +94,12 @@ export default class Component extends React.PureComponent<Props> {
           {this.getPhaseDescription()}
           {!!this.props.phaseAction && this.getPhaseActionDescription()}
           <div>
-            <button onClick={this.props.nextPhase}>Next phase</button>
+            <button
+              onClick={this.props.nextPhase}
+              disabled={!this.props.canChangePhase}
+            >
+              Next phase
+            </button>
             <button
               onClick={this.props.cancel}
               disabled={!this.props.canCancel}

@@ -2,12 +2,8 @@ import * as io from 'socket.io-client'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { createLogger } from 'redux-logger'
-import createSocketIoMiddleware from 'redux-socket.io'
-import { websocketMiddleware } from 'utils/websocket-middleware'
 import { rootReducer } from './reducers'
-
-const socket = io('http://localhost:3001')
-//const socketIoMiddleware = createSocketIoMiddleware(socket, 'server/')
+import { websocketMiddleware } from 'utils/websocket-middleware'
 
 declare let module: { hot: any }
 

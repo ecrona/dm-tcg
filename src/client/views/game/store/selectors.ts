@@ -8,6 +8,8 @@ import {
   findCardStateByLocalId
 } from '@shared/utils/helpers/find'
 import {
+  canChangePhase as canChangePhaseHelper,
+  canCancel as canCancelHelper,
   canChargeMana,
   canSummon,
   canAttack,
@@ -17,9 +19,13 @@ import {
 const createZoneSelector = (zone: Zone, mine: boolean) =>
   createSelector(
     (state: State) => state.cards,
-    (cards): Array<CardViewState> =>
+    (state: State) => state.game.me,
+    (cards, me): Array<CardViewState> =>
       cards
-        .filter(cardState => cardState.mine === mine && cardState.zone === zone)
+        .filter(
+          cardState =>
+            mine === (cardState.playerId === me.id) && cardState.zone === zone
+        )
         .sort((a, b) => a.order - b.order)
         .map(cardState => {
           const card = cardCollection.find(cardState)
@@ -50,20 +56,22 @@ export const getTheirGraveyard = createZoneSelector(Zone.Graveyard, false)
 
 export const getSelectedCard = createSelector(
   (state: State) => state.cards,
+  (state: State) => state.game.me,
   (state: State) => state.game.selectedCardLocalId,
   (state: State) => state.game.phase,
   (state: State) => state.game.phaseAction,
-  (cards, selectedCardLocalId, phase, phaseAction) => {
+  (state: State) => state.game.chargedManaAmount,
+  (cards, me, selectedCardLocalId, phase, phaseAction, chargedManaAmount) => {
     if (selectedCardLocalId) {
       const cardState = findCardStateByLocalId(cards, selectedCardLocalId)
       const card = cardCollection.find(cardState)
 
       let actionName = ''
       let availableActions = [
-        canChargeMana(cardState, phase, phaseAction),
-        canSummon(cardState, phase, phaseAction),
-        canAttack(cardState, phase, phaseAction),
-        canBattle(cardState, phase, phaseAction)
+        canChargeMana(me.id, chargedManaAmount, cardState, phase, phaseAction),
+        canSummon(me.id, cardState, phase, phaseAction),
+        canAttack(me.id, cardState, phase, phaseAction),
+        canBattle(me.id, cardState, phase, phaseAction)
       ]
 
       console.log(availableActions)
@@ -87,6 +95,15 @@ export const getSelectedCard = createSelector(
       }
     }
   }
+)
+
+export const canChangePhase = createSelector(
+  (state: State) => state.game.me,
+  (state: State) => state.game.turnPlayerId,
+  (state: State) => state.game.phase,
+  (state: State) => state.game.phaseAction,
+  (me, turnPlayerId, phase, phaseAction) =>
+    canChangePhaseHelper(me.id, turnPlayerId, phase, phaseAction)
 )
 
 export const canCancel = createSelector(

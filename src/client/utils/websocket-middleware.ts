@@ -10,15 +10,17 @@ let socket: SocketIOClient.Socket
  * An example middleware to handle WebSocket connections.
  * NB: There is no exception handling!
  */
-export const websocketMiddleware: Middleware<
-  {},
-  State
-> = store => next => action => {
+export const websocketMiddleware: Middleware<{}, State> = store => next => (
+  action: Actions
+) => {
   switch (action.type) {
     case ActionTypes.connect:
       console.log('connect')
-      socket = io('http://localhost:3001')
-      ;(window as any).k = socket
+      socket = io('http://localhost:3001', {
+        query: {
+          token: 1
+        }
+      })
 
       /*websocket.onopen = () =>
         console.log('open!') || store.dispatch(actions.open())
@@ -31,19 +33,17 @@ export const websocketMiddleware: Middleware<
         'connect',
         () => console.log('open') || store.dispatch(actions.open())
       )
-      socket.on('event', data => store.dispatch(data))
+      socket.on('event', data => console.log(data) || store.dispatch(data))
       socket.on('disconnect', () => console.log('d'))
 
       break
 
     case ActionTypes.open:
-      if (!store.getState().cards.length) {
-        socket.emit('game/get-data')
-      }
+      socket.emit('game/get-data')
       break
 
     case ActionTypes.send:
-      socket.send(JSON.stringify(action.payload))
+      socket.emit(action.payload.event, action.payload.data)
       break
 
     case ActionTypes.disconnect:

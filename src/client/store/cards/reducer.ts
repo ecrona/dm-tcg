@@ -68,10 +68,10 @@ console.log(initialState)
 export default function reducer(state = initialState, action: Actions): State {
   switch (action.type) {
     case ActionTypes.game.setData:
-      return action.payload
-    case ActionTypes.cards.putToManaZone:
+      return action.payload.cards
+    case ActionTypes.cards.chargeMana:
       return moveCardToZone(state, action.payload, Zone.ManaZone)
-    case ActionTypes.cards.putToBattleZone:
+    case ActionTypes.cards.summon:
       return moveCardToZone(state, action.payload, Zone.BattleZone)
     case ActionTypes.cards.battle:
       return battle(state, action.payload.attacker, action.payload.target)

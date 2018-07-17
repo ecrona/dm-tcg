@@ -1,12 +1,13 @@
 import { cardCollection } from '@shared/collections/card'
 import { IdentifableCard, CardState, Zone } from '@shared/models/card'
 import { EffectEvent } from '@shared/models/effects'
+import { Player } from '@shared/models/player'
 
 export const isCardState = (
   fromCard: IdentifableCard,
   toCard: IdentifableCard
 ) =>
-  fromCard.mine === toCard.mine &&
+  fromCard.playerId === toCard.playerId &&
   fromCard.zone === toCard.zone &&
   fromCard.order === toCard.order
 
@@ -20,13 +21,13 @@ export const findCardStateByLocalId = (
 
 export const getZoneTopOrder = (
   cards: Array<CardState>,
-  mine: boolean,
+  playerId: number,
   zone: Zone
 ) => {
   return Math.max(
     -1,
     ...cards
-      .filter(card => card.mine === mine && card.zone === zone)
+      .filter(card => card.playerId === playerId && card.zone === zone)
       .map(card => card.order)
   )
 }

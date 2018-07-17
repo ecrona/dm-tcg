@@ -12,7 +12,8 @@ export const actions = {
   connect: () => createAction(ActionTypes.connect),
   open: () => createAction(ActionTypes.open),
   close: (code: number) => createAction(ActionTypes.close, code),
-  send: () => createAction(ActionTypes.send),
+  send: (event: string, data?: any) =>
+    createAction(ActionTypes.send, { event, data }),
   disconnect: () => createAction(ActionTypes.disconnect)
 }
 

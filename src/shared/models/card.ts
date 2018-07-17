@@ -37,7 +37,7 @@ export enum Civilization {
 }
 
 export interface IdentifableCard {
-  mine: boolean
+  playerId: number
   zone: Zone
   order: number
 }
